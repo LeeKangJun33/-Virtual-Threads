@@ -33,6 +33,8 @@ public interface SearchKeywordRepository extends JpaRepository<SearchKeyword, Lo
     """, nativeQuery = true)
     List<String> findSuggestionsByPrefix(@Param("prefix") String prefix);
 
+    List<SearchKeyword> findTop20ByUsernameOrderBySearchedAtDesc(String username);
+
 
 
 }

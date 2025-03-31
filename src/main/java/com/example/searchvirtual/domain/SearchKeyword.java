@@ -23,4 +23,7 @@ public class SearchKeyword {
 
     @Column(name = "searched_at")
     private LocalDateTime searchedAt  = LocalDateTime.now();
+
+    @Column(name = "username")
+    private String username;
 }

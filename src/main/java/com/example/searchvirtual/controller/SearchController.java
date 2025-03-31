@@ -7,6 +7,7 @@ import com.example.searchvirtual.service.DocumentService;
 import com.example.searchvirtual.service.SearchKeywordService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,12 +31,19 @@ public class SearchController {
             @RequestParam(required = false) String category,
             @RequestParam(defaultValue = "relevance") String sort,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            Authentication auth){
+
 
         //검색 키워드 기록
         SearchKeyword searchKeyword = new SearchKeyword();
         searchKeyword.setKeyword(keyword);
         searchKeyword.setSearchedAt(LocalDateTime.now());
+
+        if (auth != null&& auth.isAuthenticated()){
+            searchKeyword.setUsername(auth.getName());
+        }
+
         searchKeywordRepository.save(searchKeyword);
 
 
