@@ -37,4 +37,42 @@ public interface SearchKeywordRepository extends JpaRepository<SearchKeyword, Lo
 
 
 
+    @Query("""
+    SELECT k.keyword, COUNT(k) 
+    FROM SearchKeyword k 
+    WHERE k.username = :username 
+    GROUP BY k.keyword 
+    ORDER BY COUNT(k) DESC 
+    LIMIT 5
+""")
+    List<Object[]> findTopKeywordsByUsername(@Param("username") String username);
+
+    @Query("""
+    SELECT FUNCTION('DATE_FORMAT', k.searchedAt, '%Y-%m-%d'), COUNT(k) 
+    FROM SearchKeyword k 
+    WHERE k.username = :username 
+    GROUP BY FUNCTION('DATE_FORMAT', k.searchedAt, '%Y-%m-%d') 
+    ORDER BY FUNCTION('DATE_FORMAT', k.searchedAt, '%Y-%m-%d') DESC
+""")
+    List<Object[]> findDailyKeywordCountByUsername(@Param("username") String username);
+
+    @Query("""
+    SELECT k.keyword, COUNT(k) 
+    FROM SearchKeyword k 
+    GROUP BY k.keyword 
+    ORDER BY COUNT(k) DESC 
+    LIMIT 10
+""")
+    List<Object[]> findGlobalTopKeywords();
+
+    @Query("""
+    SELECT FUNCTION('DATE_FORMAT', k.searchedAt, '%Y-%m-%d'), COUNT(k)
+    FROM SearchKeyword k 
+    GROUP BY FUNCTION('DATE_FORMAT', k.searchedAt, '%Y-%m-%d') 
+    ORDER BY FUNCTION('DATE_FORMAT', k.searchedAt, '%Y-%m-%d') DESC
+""")
+    List<Object[]> findGlobalDailyKeywordStats();
+
+
+
 }

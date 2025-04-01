@@ -41,4 +41,31 @@ public class UserController {
             return map;
         }).toList();
     }
+
+    @GetMapping("/my-search-stats")
+    public Map<String,Object> getMySearchStats(Authentication auth){
+        String username = auth.getName();
+
+        List<Object[]> topKeywords = searchKeywordRepository.findTopKeywordsByUsername(username);
+        List<Map<String,Object>> topList = topKeywords.stream().map(row ->{
+            Map<String ,Object> map = new HashMap<>();
+            map.put("keyword",row[0]);
+            map.put("count",row[1]);
+            return map;
+        }).toList();
+
+        List<Object[]> dailyStats  = searchKeywordRepository.findDailyKeywordCountByUsername(username);
+        List<Map<String,Object>> dailyList   = dailyStats.stream().map(row ->{
+            Map<String,Object> map = new HashMap<>();
+            map.put("keyword",row[0]);
+            map.put("count",row[1]);
+            return map;
+        }).toList();
+
+        Map<String ,Object> result = new HashMap<>();
+        result.put("topKeywords",topList);
+        result.put("dailyStats",dailyList );
+
+        return result;
+    }
 }
